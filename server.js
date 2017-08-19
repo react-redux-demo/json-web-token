@@ -17,7 +17,22 @@ app.use(morgan('dev'));
 
 app.get('/',function (req,res) {
     res.send('hello world')
-})
+});
+
+app.get('/setup',function (req,res) {
+    var addyyou = new User({
+        name:'liyan',
+        password:'12345678',
+        admin:true
+    });
+    addyyou.save(function (err) {
+        if(err){
+            throw err;
+        }
+        console.log('User saved successfully');
+        res.json({success:true})
+    })
+});
 
 app.listen(3000,function () {
     console.log('server started at port:3000')
