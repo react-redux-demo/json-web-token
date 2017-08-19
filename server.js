@@ -3,8 +3,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
-var User = require('./module/user');
+const User = require('./module/user');
 const config = require('./config');
+const api = express.Router();
 
 const app = express();
 
@@ -33,6 +34,14 @@ app.get('/setup',function (req,res) {
         res.json({success:true})
     })
 });
+
+api.get('/users',function (req,res) {
+    User.find({},function (err,result) {
+        res.json(result);
+    })
+});
+
+app.use('/api',api);
 
 app.listen(3000,function () {
     console.log('server started at port:3000')
