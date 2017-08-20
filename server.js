@@ -41,6 +41,31 @@ api.get('/users',function (req,res) {
     })
 });
 
+api.post('/authenticate',function (req,res) {
+    User.findOne({name:req.body.name},function (err,user) {
+        if(err){
+            throw err;
+        }
+        if(!user){
+            res.json({success:false,message:'authenticate failed,user not find!'})
+        }else if(user){
+            if(user.password !== req.body.password){
+                res.json({success:false,message:'authenticate failed,Wrong password'})
+            }else{
+                var token = jwt.sign(user,app.get('secret'),{ //设置验证信息
+                    expiresIn:60*60*224
+                });
+                res.json({
+                    uccess:true,
+                    message:'Enjoy your token',
+                    token:token
+                })
+            }
+        }
+
+    })
+});
+
 app.use('/api',api);
 
 app.listen(3000,function () {
