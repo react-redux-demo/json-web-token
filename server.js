@@ -20,21 +20,30 @@ app.get('/',function (req,res) {
     res.send('hello world')
 });
 
-app.get('/setup',function (req,res) {
-    var addyyou = new User({
-        name:'liyan',
-        password:'12345678',
-        admin:true
-    });
-    addyyou.save(function (err) {
+// app.get('/setup',function (req,res) {
+//     var addyyou = new User({
+//         name:'liyan',
+//         password:'12345678',
+//         admin:true
+//     });
+//     addyyou.save(function (err) {
+//         if(err){
+//             throw err;
+//         }
+//         console.log('User saved successfully');
+//         res.json({success:true})
+//     })
+// });
+
+
+app.post('/register',function (req,res) {
+    new User(req.body).save(function (err) {
         if(err){
-            throw err;
+            throw err
         }
-        console.log('User saved successfully');
         res.json({success:true})
     })
-});
-
+})
 
 
 api.post('/authenticate',function (req,res) {
