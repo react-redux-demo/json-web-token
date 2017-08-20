@@ -35,11 +35,7 @@ app.get('/setup',function (req,res) {
     })
 });
 
-api.get('/users',function (req,res) {
-    User.find({},function (err,result) {
-        res.json(result);
-    })
-});
+
 
 api.post('/authenticate',function (req,res) {
     User.findOne({name:req.body.name},function (err,user) {
@@ -63,6 +59,31 @@ api.post('/authenticate',function (req,res) {
             }
         }
 
+    })
+});
+
+api.use(function (req,res,next) {
+    const token = req.body.token || req.query.token || req.headers['x-access-token'];
+    if(token){
+        jwt.verify(token,app.get('secret',function (err,decoded) {
+            if(err){
+                return res.json({success:false,message:'Failed to authenicate token'});
+            }else{
+                req.decoded = decoded;
+                next();
+            }
+        }))
+    }else{
+        return res.status(403).send({
+            success:true,
+            message:'No token provided'
+        })
+    }
+})
+
+api.get('/users',function (req,res) {
+    User.find({},function (err,result) {
+        res.json(result);
     })
 });
 
